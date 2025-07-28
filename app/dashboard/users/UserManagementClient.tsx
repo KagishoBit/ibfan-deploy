@@ -5,9 +5,11 @@ import { useState } from 'react';
 import { User } from '@/app/lib/types'; 
 
 // Define the props the component expects, using your User type
+// AFTER
 interface UserManagementClientProps {
   initialUsers: User[];
   addUserAction: (data: { username: string; email: string; }) => Promise<User>;
+  updateUserAction: (id: string, data: { username: string; role: 'admin' | 'user' | null; }) => Promise<User>; // <-- ADD THIS LINE
   deleteUserAction: (userId: string) => Promise<void>;
 }
 
