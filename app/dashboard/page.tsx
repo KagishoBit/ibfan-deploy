@@ -1,82 +1,73 @@
-'use client';
+import { fetchDashboardStats } from '@/app/lib/data';
+import {
+  DocumentPlusIcon,
+  ClockIcon,
+  CheckBadgeIcon,
+  ClipboardDocumentListIcon
+} from '@heroicons/react/24/outline';
+import React from 'react';
 
-import React, { useState, useEffect } from 'react';
-
-interface Violation {
-  id: number;
-  employeeId: string;
-  location: string;
-  violationType: string;
-  description: string;
-  date: string;
-  resolved: boolean;
+// --- Typed Props for our StatCard Component ---
+interface StatCardProps {
+  title: string;
+  value: number;
+  total: number;
+  Icon: React.ElementType; // Type for passing a component like an icon
 }
 
-const ViolationDashboard: React.FC = () => {
-  const [violations, setViolations] = useState<Violation[]>([]);
-  const [userCount, setUserCount] = useState<number>(0);
-  const [resolvedCount, setResolvedCount] = useState<number>(0);
-  const [openCount, setOpenCount] = useState<number>(0);
-
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const mockViolations: Violation[] = [
-          { id: 1, employeeId: 'E123', location: 'New York', violationType: 'Safety', description: 'No PPE', date: '2023-10-26', resolved: true },
-          { id: 2, employeeId: 'E456', location: 'Los Angeles', violationType: 'Attendance', description: 'Late arrival', date: '2023-10-27', resolved: false },
-          { id: 3, employeeId: 'E789', location: 'Chicago', violationType: 'Policy', description: 'Unauthorized access', date: '2023-10-28', resolved: false },
-          { id: 4, employeeId: 'E100', location: 'Miami', violationType: 'Safety', description: 'Unsafe equipment', date: '2023-10-29', resolved: true },
-          { id: 5, employeeId: 'E101', location: 'Seattle', violationType: 'Attendance', description: 'Left early', date: '2023-10-30', resolved: false },
-        ];
-        setViolations(mockViolations);
-
-        const mockUserCount = 10;
-        setUserCount(mockUserCount);
-
-        const resolved = mockViolations.filter((v) => v.resolved).length;
-        setResolvedCount(resolved);
-
-        const open = mockViolations.filter((v) => !v.resolved).length;
-        setOpenCount(open);
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      }
-    };
-
-    fetchDashboardData();
-  }, []);
+// --- Reusable StatCard Component ---
+// Using React.FC (Functional Component) provides type-checking for props and return value
+const StatCard: React.FC<StatCardProps> = ({ title, value, total, Icon }) => {
+  const radius = 50;
+  const circumference = 2 * Math.PI * radius;
+  const percentage = total > 0 ? (value / total) * 100 : 0;
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-8 text-gray-800">Violations Dashboard</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* User Count Card */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-lg font-semibold mb-3 text-gray-700">Users</h2>
-          <p className="text-4xl font-bold text-blue-600">{userCount}</p>
-        </div>
-
-        {/* Total Violations Card */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-lg font-semibold mb-3 text-gray-700">Total Violations</h2>
-          <p className="text-4xl font-bold text-red-600">{violations.length}</p>
-        </div>
-
-        {/* Resolved Violations Card */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-lg font-semibold mb-3 text-gray-700">Resolved</h2>
-          <p className="text-4xl font-bold text-green-600">{resolvedCount}</p>
-        </div>
-
-        {/* Open Violations Card */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-lg font-semibold mb-3 text-gray-700">Open Violations</h2>
-          <p className="text-4xl font-bold text-yellow-600">{openCount}</p>
-        </div>
+    <div className="bg-white rounded-xl shadow p-4 flex flex-col items-center justify-center gap-2 transform transition-transform hover:scale-105">
+      <div className="flex flex-col items-center">
+        <Icon className="h-8 w-8 text-blue-600 mb-2" />
+        <h2 className="text-md font-medium text-gray-500">{title}</h2>
+      </div>
+      <div className="relative flex items-center justify-center w-40 h-40">
+        <svg className="transform -rotate-90" width="100%" height="100%" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r={radius} stroke="#e6e6e6" strokeWidth="10" fill="transparent" />
+          <circle
+            cx="60"
+            cy="60"
+            r={radius}
+            stroke="#3b82f6"
+            strokeWidth="10"
+            fill="transparent"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            style={{ transition: 'stroke-dashoffset 0.5s ease-in-out' }}
+          />
+        </svg>
+        <span className="absolute text-4xl font-bold text-gray-800">{value}</span>
       </div>
     </div>
   );
 };
 
-export default ViolationDashboard;
+// --- Main Dashboard Page (Async Server Component) ---
+export default async function DashboardPage() {
+  // 1. Fetch data on the server. The `stats` constant is automatically typed as DashboardStats.
+  const stats = await fetchDashboardStats();
+
+  // 2. Render the page with the type-safe data
+  return (
+    <main>
+      <h1 className="text-3xl font-bold mb-8 text-gray-800">
+        Violations Dashboard
+      </h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard title="New violations" value={stats.newCount} total={stats.reportedCount} Icon={DocumentPlusIcon} />
+        <StatCard title="Pending violations" value={stats.pendingCount} total={stats.reportedCount} Icon={ClockIcon} />
+        <StatCard title="Confirmed violations" value={stats.confirmedCount} total={stats.reportedCount} Icon={CheckBadgeIcon} />
+        <StatCard title="Reported violations" value={stats.reportedCount} total={stats.reportedCount} Icon={ClipboardDocumentListIcon} />
+      </div>
+    </main>
+  );
+}
