@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { DocumentPlusIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { ViolationFormModal } from './ViolationFormModal';
+import { ViolationFormModal } from './ViolationsFormModal';
 import type { Violation } from '@/app/lib/types';
 
 interface ViolationsClientProps {

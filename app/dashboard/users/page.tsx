@@ -1,5 +1,5 @@
 import { getUsers, addUser, updateUser, deleteUser } from '@/app/lib/actions';
-import UserManagementClient from './UserManagementClient'; // We'll create this below
+import UserManagementClient from './UserManagementClient';
 
 // This is now a Server Component
 export default async function UserManagementPage() {
