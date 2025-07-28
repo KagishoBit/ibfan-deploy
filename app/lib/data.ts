@@ -1,18 +1,18 @@
 import { supabase } from './supabase';
-import { DashboardStats } from './types'; // Import our new type
+import { DashboardStats } from './types';
 import { unstable_noStore as noStore } from 'next/cache';
 
 // The function now explicitly promises to return our DashboardStats type
 export async function fetchDashboardStats(): Promise<DashboardStats> {
-  // Prevents the response from being cached, ensuring fresh data on every request
+  // Prevents the response from being cached, ensuring fresh data
   noStore();
 
   try {
+    // Correctly calculates 7 days ago from the current date
     const sevenDaysAgo = new Date();
-    // Using the current date of July 27, 2025
-    sevenDaysAgo.setDate(new Date('2025-07-27T00:00:00Z').getDate() - 7);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    // Perform all queries concurrently
+    // Perform all Supabase queries concurrently
     const [
       reportedResult,
       confirmedResult,
@@ -24,10 +24,10 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
       supabase.from('violations').select('*', { count: 'exact', head: true }).eq('resolved', true),
       supabase.from('violations').select('*', { count: 'exact', head: true }).eq('resolved', false),
       supabase.from('violations').select('*', { count: 'exact', head: true }).gte('date', sevenDaysAgo.toISOString()),
-      supabase.from('users').select('*', { count: 'exact', head: true })
+      supabase.from('users_profile').select('*', { count: 'exact', head: true }) // Corrected table name
     ]);
 
-    // Check for errors in each query result
+    // Error handling for each concurrent query
     if (reportedResult.error) throw reportedResult.error;
     if (confirmedResult.error) throw confirmedResult.error;
     if (pendingResult.error) throw pendingResult.error;
