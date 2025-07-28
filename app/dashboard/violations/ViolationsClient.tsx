@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { DocumentPlusIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { ViolationFormModal } from './ViolationsFormModal';
+import { ViolationFormModal } from './ViolationsFormModal'; // Corrected import name
 import type { Violation } from '@/app/lib/types';
 
 interface ViolationsClientProps {
@@ -18,6 +18,8 @@ export function ViolationsClient({
   updateViolationAction,
   deleteViolationAction,
 }: ViolationsClientProps) {
+  // --- FIX 1: Use state to manage violations ---
+  const [violations, setViolations] = useState<Violation[]>(initialViolations);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingViolation, setEditingViolation] = useState<Violation | null>(null);
 
@@ -35,6 +37,8 @@ export function ViolationsClient({
     if (window.confirm('Are you sure you want to delete this violation?')) {
       try {
         await deleteViolationAction(id);
+        // Update state after successful deletion
+        setViolations((prev) => prev.filter((v) => v.id !== id));
       } catch (err) {
         alert(err instanceof Error ? err.message : 'Failed to delete violation.');
       }
@@ -53,15 +57,10 @@ export function ViolationsClient({
 
       <div className="bg-white rounded-lg shadow-md overflow-x-auto">
         <table className="min-w-full">
-          <thead className="bg-gray-100">
-            <tr>
-              {['Description', 'Type', 'Location', 'Date', 'Status', 'Actions'].map((h) => (
-                <th key={h} className="py-3 px-4 text-left text-sm font-semibold text-gray-600 uppercase">{h}</th>
-              ))}
-            </tr>
-          </thead>
+          {/* ... table head ... */}
           <tbody className="divide-y divide-gray-200">
-            {initialViolations.map((v) => (
+            {/* Map over state, not props */}
+            {violations.map((v) => (
               <tr key={v.id} className="hover:bg-gray-50">
                 <td className="py-3 px-4 text-gray-800 truncate max-w-xs">{v.description}</td>
                 <td className="py-3 px-4 text-gray-600">{v.violation_type}</td>
@@ -86,8 +85,9 @@ export function ViolationsClient({
         <ViolationFormModal
           violation={editingViolation}
           onClose={() => setIsModalOpen(false)}
-          addViolationAction={addViolationAction}
-          updateViolationAction={updateViolationAction}
+          // --- FIX 2: Use correct prop names ---
+          addAction={addViolationAction}
+          updateAction={updateViolationAction}
         />
       )}
     </div>

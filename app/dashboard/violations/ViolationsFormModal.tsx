@@ -34,13 +34,21 @@ export function ViolationFormModal({ violation, onClose, addAction, updateAction
             {/* Hidden input to pass the ID when updating */}
             {violation && <input type="hidden" name="id" value={violation.id} />}
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" name="employeeId" placeholder="Employee ID" defaultValue={violation?.employeeId ?? ''} className="w-full border rounded p-2" required />
-                <input type="text" name="location" placeholder="Location" defaultValue={violation?.location ?? ''} className="w-full border rounded p-2" required />
-            </div>
-            <input type="text" name="violationType" placeholder="Violation Type" defaultValue={violation?.violationType ?? ''} className="w-full border rounded p-2" required />
-            <textarea name="description" placeholder="Description of violation..." defaultValue={violation?.description ?? ''} className="w-full border rounded p-2 h-28" required />
-            <input type="date" name="date" defaultValue={violation ? violation.date.split('T')[0] : new Date().toISOString().split('T')[0]} className="w-full border rounded p-2" required />
+            // Corrected form inputs
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  {/* Corrected: name and defaultValue now use 'user_id' */}
+  <input type="text" name="user_id" placeholder="User ID" defaultValue={violation?.user_id ?? ''} className="w-full border rounded p-2" required />
+  
+  <input type="text" name="location" placeholder="Location" defaultValue={violation?.location ?? ''} className="w-full border rounded p-2" required />
+</div>
+
+{/* Corrected: name and defaultValue now use 'violation_type' */}
+<input type="text" name="violation_type" placeholder="Violation Type" defaultValue={violation?.violation_type ?? ''} className="w-full border rounded p-2" required />
+
+<textarea name="description" placeholder="Description of violation..." defaultValue={violation?.description ?? ''} className="w-full border rounded p-2 h-28" required />
+
+<input type="date" name="date" defaultValue={violation ? violation.date.split('T')[0] : new Date().toISOString().split('T')[0]} className="w-full border rounded p-2" required />
             
             <div className="flex justify-end gap-3 pt-4">
                 <button type="button" onClick={onClose} className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg">Cancel</button>
