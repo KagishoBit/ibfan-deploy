@@ -113,11 +113,11 @@ const ViolationManager: React.FC = () => {
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* --- BACK NAVIGATION LINK ADDED HERE --- */}
       <Link
-        href="/dashboard"
+        href="/"
         className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 mb-4"
       >
         <ArrowLeftIcon className="w-4 h-4" />
-        Back to Dashboard
+        Back to Home
       </Link>
     <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Violation Log</h1>

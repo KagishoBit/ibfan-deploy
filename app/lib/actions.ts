@@ -1,5 +1,7 @@
 'use server';
 
+import { signIn } from '@/auth'; // This will be our new auth setup
+import { AuthError } from 'next-auth';
 import { supabaseAdmin } from './supabase-admin';
 import { revalidatePath } from 'next/cache';
 import { User } from './types'; // Import your User type
@@ -18,6 +20,24 @@ export async function getUsers(): Promise<User[]> {
   return data || [];
 }
 
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
 export async function addUser(data: { username: string; email: string; }): Promise<User> {
   // 1. Create the user in Supabase Auth
   // NOTE: A temporary password is required. You should have a proper flow for this.

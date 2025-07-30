@@ -1,34 +1,36 @@
 import Link from 'next/link';
-// You can find icons from libraries like Heroicons
-import { DocumentTextIcon, UserPlusIcon } from '@heroicons/react/24/outline';
-
-// A map of links to display in the side navigation.
-const links = [
-  { name: 'Reports', href: '/dashboard/reports', icon: DocumentTextIcon },
-  { name: 'Resolve an issue', href: '/dashboard/resolve', icon: DocumentTextIcon },
-  { name: 'Examples of violations', href: '/dashboard/examples', icon: DocumentTextIcon },
-  { name: 'Register user', href: '/dashboard/register', icon: UserPlusIcon },
-  { name: 'Remove user', href: '/dashboard/remove', icon: UserPlusIcon },
-];
+import NavLinks from '@/app/ui/dashboard/nav-links';
+import Image from 'next/image';
+import { signOut } from '@/auth';
+import { PowerIcon } from '@heroicons/react/24/outline';
 
 export default function SideNav() {
   return (
-    <div className="flex h-full flex-col px-3 py-4 md:px-2" style={{ backgroundColor: '#2E5090' }}>
+    <div className="flex h-full flex-col px-3 py-4 md:px-2">
+      <Link className="mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40" href="/">
+        <div className="w-32 text-white md:w-40">
+           <Image
+              src="/logoZ.png"
+              width={200}
+              height={200}
+              alt="IBFAN Logo"
+            />
+        </div>
+      </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        {/* We can map over the links array here */}
-        {links.map((link) => {
-          const LinkIcon = link.icon;
-          return (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="flex h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm font-medium text-white hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start"
-            >
-              <LinkIcon className="w-6" />
-              <p className="hidden md:block">{link.name}</p>
-            </Link>
-          );
-        })}
+        <NavLinks />
+        <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
+        <form
+          action={async () => {
+            'use server';
+            await signOut();
+          }}
+        >
+          <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+            <PowerIcon className="w-6" />
+            <div className="hidden md:block">Sign Out</div>
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -41,19 +41,7 @@ export default function Page() {
         </div>
 
         {/* Image Content */}
-        <div className="flex items-center justify-center p-6 md:w-3/5">
-          {/* TODO: Replace with a compelling image for your cause. 
-            This could be an illustration or a stylized graphic.
-            Save your image as 'hero-image.png' in the 'public' folder.
-          */}
-          <Image
-            src="/hero-image.png"
-            width={1000}
-            height={760}
-            className="hidden rounded-lg md:block"
-            alt="Hero image showing community or protection"
-          />
-        </div>
+     
       </section>
     </main>
   );
