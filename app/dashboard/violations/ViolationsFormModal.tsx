@@ -34,7 +34,7 @@ export function ViolationFormModal({ violation, onClose, addAction, updateAction
             {/* Hidden input to pass the ID when updating */}
             {violation && <input type="hidden" name="id" value={violation.id} />}
             
-            // Corrected form inputs
+           
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
   {/* Corrected: name and defaultValue now use 'user_id' */}
