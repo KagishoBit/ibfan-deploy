@@ -16,7 +16,7 @@ export default function Page() {
         />
         <Link
           href="/login"
-           className="flex items-center gap-2 rounded-lg bg-blue-300 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-blue-300"
+            className="flex items-center gap-2 rounded-lg bg-blue-300 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-blue-300"
         >
           Log in
         </Link>
@@ -32,8 +32,9 @@ export default function Page() {
           <p className="text-lg leading-7 text-gray-600">
             IBFAN monitors the marketing of breast-milk substitutes. Your reports help us hold corporations accountable and protect infant health worldwide.
           </p>
+          {/* --- THIS LINK HAS BEEN UPDATED --- */}
           <Link
-            href="/form"
+            href="/questionnaire"
             className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-blue-500"
           >
             <span>Report a Violation</span> <ArrowRightIcon className="w-5" />
@@ -41,7 +42,7 @@ export default function Page() {
         </div>
 
         {/* Image Content */}
-     
+      
       </section>
     </main>
   );
